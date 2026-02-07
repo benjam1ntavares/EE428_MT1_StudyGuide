@@ -16,10 +16,10 @@
 
 ### 2. Properties of SIFT Features
 **Invariance:**
-- ✓ **Scale invariant:** Detects features at their characteristic scale
-- ✓ **Rotation invariant:** Orientation normalized
-- ✓ **Illumination invariant:** Descriptor normalized
-- ✓ **Partial viewpoint invariance**
+- + **Scale invariant:** Detects features at their characteristic scale
+- + **Rotation invariant:** Orientation normalized
+- + **Illumination invariant:** Descriptor normalized
+- + **Partial viewpoint invariance**
 
 **Robustness:**
 - Handles occlusion (local features)

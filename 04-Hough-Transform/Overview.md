@@ -155,7 +155,7 @@ Each peak (ρ*, θ*) represents a detected line
 **Check point (5,1) at θ = 0°:**
 ```
 ρ = 5·cos(0°) + 1·sin(0°)
-ρ = 5·(1) + 1·(0) = 5  ✓
+ρ = 5·(1) + 1·(0) = 5  +
 ```
 
 ### Example 4: Horizontal line
@@ -166,7 +166,7 @@ Each peak (ρ*, θ*) represents a detected line
 **Check point (1,3) at θ = 90°:**
 ```
 ρ = 1·cos(90°) + 3·sin(90°)
-ρ = 1·(0) + 3·(1) = 3  ✓
+ρ = 1·(0) + 3·(1) = 3  +
 ```
 
 ---
