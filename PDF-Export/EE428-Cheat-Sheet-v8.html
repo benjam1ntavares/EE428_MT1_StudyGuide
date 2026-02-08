@@ -1,0 +1,646 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<style>
+  @page {
+    size: letter;
+    margin: 0.3in 0.3in 0.3in 0.3in;
+    mso-columns: 2;
+    mso-column-separator: 1;
+    mso-column-space: 0.15in;
+  }
+  body {
+    font-family: "Segoe UI", Calibri, Arial, sans-serif;
+    font-size: 7pt;
+    line-height: 1.15;
+    columns: 2;
+    column-gap: 0.15in;
+    column-rule: 1px solid #999;
+  }
+  h1 {
+    font-size: 9pt;
+    margin: 4pt 0 2pt 0;
+    padding: 1pt 3pt;
+    background: #1a1a2e;
+    color: white;
+    border-radius: 2px;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  h2 {
+    font-size: 7.5pt;
+    margin: 3pt 0 1pt 0;
+    padding: 1pt 2pt;
+    background: #e8e8e8;
+    border-left: 3px solid #1a1a2e;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 7pt;
+    margin: 2pt 0 1pt 0;
+    color: #1a1a2e;
+    break-after: avoid;
+  }
+  p, li {
+    margin: 0.5pt 0;
+  }
+  ul, ol {
+    margin: 0;
+    padding-left: 10pt;
+  }
+  pre, code {
+    font-family: "Cascadia Mono", "Consolas", monospace;
+    font-size: 6.5pt;
+    background: #f5f5f5;
+  }
+  pre {
+    margin: 1pt 0;
+    padding: 2pt 3pt;
+    border: 0.5pt solid #ccc;
+    line-height: 1.1;
+    white-space: pre;
+  }
+  table {
+    border-collapse: collapse;
+    font-size: 6.5pt;
+    margin: 1pt 0 2pt 0;
+    width: 100%;
+  }
+  th, td {
+    border: 0.5pt solid #999;
+    padding: 1pt 2pt;
+    text-align: left;
+  }
+  th {
+    background: #d0d0d0;
+    font-weight: bold;
+  }
+  .side-by-side {
+    display: flex;
+    gap: 4pt;
+    align-items: flex-start;
+  }
+  .side-by-side > div {
+    flex: 1;
+    min-width: 0;
+  }
+  .side-by-side table {
+    width: 100%;
+  }
+  .compact-list {
+    margin: 0;
+    padding-left: 8pt;
+  }
+  .compact-list li {
+    margin: 0;
+  }
+  b { font-weight: bold; }
+  .note { color: #333; font-style: italic; font-size: 6.5pt; }
+  hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 3pt 0;
+  }
+  .keep-together {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+</style>
+</head>
+<body>
+
+<h1>1. IMAGE FORMATION</h1>
+
+<div class="keep-together">
+<h2>Perspective Projection</h2>
+<pre>x = f * (X / Z)        y = f * (Y / Z)</pre>
+<p><b>f</b> = focal length, <b>(X,Y,Z)</b> = 3D world, <b>(x,y)</b> = 2D image. Larger Z = smaller image.</p>
+</div>
+
+<div class="keep-together">
+<h2>Homogeneous Coordinates</h2>
+<p>Cartesian (x,y) &rarr; Homogeneous [x, y, 1]. Homogeneous [x, y, w] &rarr; Cartesian (x/w, y/w).</p>
+<pre>[x']   [f  0  0  0] [X]
+[y'] = [0  f  0  0] [Y]    x = x'/z' = fX/Z
+[z']   [0  0  1  0] [Z]    y = y'/z' = fY/Z
+                     [1]</pre>
+</div>
+
+<div class="keep-together">
+<h2>Pinhole Camera</h2>
+<p>No lens distortion, infinite depth of field, inverted image, smaller aperture = sharper but darker.</p>
+</div>
+
+<div class="keep-together">
+<h2>Key Effects</h2>
+<ul class="compact-list">
+<li>Parallel lines converge to <b>vanishing point</b></li>
+<li>Size decreases with distance</li>
+<li>Depth ambiguity (many 3D &rarr; same 2D)</li>
+</ul>
+</div>
+
+<div class="keep-together">
+<h2>Sampling &amp; Quantization</h2>
+<p><b>Sampling:</b> continuous space &rarr; discrete pixels. Too low = <b>aliasing</b>.<br>
+<b>Quantization:</b> continuous intensity &rarr; discrete levels. Too low = <b>posterization</b>. 8-bit = 256 levels.</p>
+</div>
+
+<div class="keep-together">
+<h2>Image Types</h2>
+<p><b>Binary</b> (0/1) | <b>Grayscale</b> (0-255) | <b>Color</b> (RGB, 3&times;8-bit) | <b>Labeled</b> (integer per region)</p>
+<p><b>Coordinates:</b> matrix I(row,col): row=y, col=x. Matrix (3,5) = image (x=5, y=3). MATLAB is 1-indexed.</p>
+</div>
+
+<h1>2. IMAGE FILTERING</h1>
+
+<div class="keep-together">
+<h2>Convolution (MUST do by hand!)</h2>
+<p>Place kernel over patch, multiply corresponding elements, sum all products.</p>
+<pre>Output(i,j) = SUM SUM Image(i+m, j+n) x Kernel(m,n)</pre>
+</div>
+
+<div class="keep-together">
+<h2>Masks</h2>
+<div class="side-by-side">
+<div>
+<h3>Mean (Box) 3x3</h3>
+<pre>[1  1  1]
+[1  1  1] x(1/9)
+[1  1  1]</pre>
+<p>All equal. Blurs edges.</p>
+</div>
+<div>
+<h3>Gaussian 3x3 (~&sigma;=1)</h3>
+<pre>[1  2  1]
+[2  4  2] x(1/16)
+[1  2  1]</pre>
+<p>Center-weighted. Separable.</p>
+</div>
+</div>
+</div>
+
+<div class="keep-together">
+<h2>Worked Example (Sobel Gx)</h2>
+<pre>Patch:         Gx mask:
+[10 20 30]     [-1  0  1]
+[15 25 35]  x  [-2  0  2]
+[20 30 40]     [-1  0  1]
+= (-1)(10)+(0)(20)+(1)(30)+(-2)(15)+(0)(25)
+  +(2)(35)+(-1)(20)+(0)(30)+(1)(40) = 80</pre>
+</div>
+
+<div class="keep-together">
+<h2>Filter Effectiveness</h2>
+<div class="side-by-side">
+<div>
+<h3>Filter vs Noise</h3>
+<table>
+<tr><th></th><th>Gaussian</th><th>S&amp;P</th></tr>
+<tr><td><b>Mean</b></td><td>Good</td><td>Poor</td></tr>
+<tr><td><b>Gaussian</b></td><td>Better</td><td>Poor</td></tr>
+<tr><td><b>Median</b></td><td>Poor</td><td><b>Excellent</b></td></tr>
+</table>
+</div>
+<div>
+<h3>Filter Properties</h3>
+<table>
+<tr><th>Filter</th><th>Type</th><th>Edges</th></tr>
+<tr><td><b>Mean</b></td><td>Linear</td><td>Poor</td></tr>
+<tr><td><b>Gaussian</b></td><td>Linear</td><td>Better</td></tr>
+<tr><td><b>Median</b></td><td>Non-lin</td><td><b>Excel.</b></td></tr>
+</table>
+</div>
+</div>
+<p class="note">Median preserves edges: non-linear, picks existing value. At edge, majority of window on one side.</p>
+</div>
+
+<div class="keep-together">
+<h2>Boundary Handling</h2>
+<p><b>Zero padding</b> | <b>Replicate edges</b> | <b>Symmetric/mirror</b></p>
+</div>
+
+<div class="keep-together">
+<h2>Noise Types</h2>
+<table>
+<tr><th>Noise</th><th>Characteristics</th><th>Best Filter</th></tr>
+<tr><td><b>Gaussian</b></td><td>Additive, bell curve</td><td>Gaussian/mean</td></tr>
+<tr><td><b>Salt&amp;Pepper</b></td><td>Random B/W pixels</td><td><b>Median</b></td></tr>
+<tr><td><b>Uniform</b></td><td>Equal prob across range</td><td>Mean</td></tr>
+<tr><td><b>Speckle</b></td><td>Multiplicative</td><td>Specialized</td></tr>
+</table>
+</div>
+
+<h1>3. EDGE DETECTION</h1>
+
+<div class="keep-together">
+<h2>Sobel Operator (MEMORIZE)</h2>
+<div class="side-by-side">
+<div>
+<h3>Gx (vertical edges)</h3>
+<pre>[-1  0  1]
+[-2  0  2]
+[-1  0  1]</pre>
+</div>
+<div>
+<h3>Gy (horizontal edges)</h3>
+<pre>[-1 -2 -1]
+[ 0  0  0]
+[ 1  2  1]</pre>
+</div>
+</div>
+<pre>|G| = sqrt(Gx^2 + Gy^2)     theta = atan2(Gy, Gx)</pre>
+</div>
+
+<div class="keep-together">
+<h2>Prewitt Operator</h2>
+<div class="side-by-side">
+<div>
+<pre>Gx:            Gy:
+[-1  0  1]     [-1 -1 -1]
+[-1  0  1]     [ 0  0  0]
+[-1  0  1]     [ 1  1  1]</pre>
+</div>
+<div>
+<p>Uniform weighting (no 2x center). Sobel generally better.</p>
+</div>
+</div>
+</div>
+
+<div class="keep-together">
+<h2>Laplacian Operator (2nd order)</h2>
+<div class="side-by-side">
+<div>
+<h3>4-connected</h3>
+<pre>[ 0  1  0]
+[ 1 -4  1]
+[ 0  1  0]</pre>
+</div>
+<div>
+<h3>8-connected</h3>
+<pre>[ 1  1  1]
+[ 1 -8  1]
+[ 1  1  1]</pre>
+</div>
+</div>
+<p>Isotropic (rotation invariant). No direction info. Sensitive to noise. Edges at <b>zero-crossings</b>.</p>
+</div>
+
+<div class="keep-together">
+<h2>LoG (Laplacian of Gaussian)</h2>
+<pre>LoG = (x^2 + y^2 - 2*sigma^2)/sigma^4 * exp(-(x^2+y^2)/(2*sigma^2))</pre>
+<p>Combines smoothing + edge detection. Reduces noise sensitivity. Edges at zero-crossings.</p>
+</div>
+
+<div class="keep-together">
+<h2>Sobel Worked Example</h2>
+<pre>Patch: [50 50 50; 50 50 100; 50 50 100]
+
+Gx = (-1)(50)+(0)(50)+(1)(50)+(-2)(50)+(0)(50)
+    +(2)(100)+(-1)(50)+(0)(50)+(1)(100) = 150
+
+Gy = (-1)(50)+(-2)(50)+(-1)(50)+(0)(50)+(0)(50)
+    +(0)(100)+(1)(50)+(2)(50)+(1)(100) = 50
+
+|G| = sqrt(150^2 + 50^2) = sqrt(25000) = 158.1
+theta = atan2(50, 150) = 18.4 deg</pre>
+</div>
+
+<div class="keep-together">
+<h2>Canny Edge Detection (5 steps, 3 params)</h2>
+<ol style="margin:0; padding-left:12pt;">
+<li><b>Gaussian smoothing</b> -- reduce noise</li>
+<li><b>Gradient calculation</b> -- Sobel for mag &amp; dir</li>
+<li><b>Non-maxima suppression</b> -- thin to 1px</li>
+<li><b>Double thresholding</b> -- strong (&gt;T_high) and weak (&gt;T_low)</li>
+<li><b>Hysteresis</b> -- keep weak only if connected to strong</li>
+</ol>
+<p><b>3 params:</b> <b>&sigma;</b> (smoothing), <b>T_high</b>, <b>T_low</b>. Ratio T_high/T_low = 2:1 or 3:1. Larger &sigma; = fewer edges.</p>
+</div>
+
+<div class="keep-together">
+<h2>Non-Maxima Suppression (NMS)</h2>
+<p>Thins edges to 1px. For each pixel: quantize &theta; to 4 dirs (0&deg;, 45&deg;, 90&deg;, 135&deg;), check 2 neighbors along &theta;. If M &gt; both neighbors: <b>keep</b>. Else: suppress to 0.</p>
+<pre>Magnitude:          Direction: all 0 (horizontal)
+[10  20  30]
+[15  40  25]   Center=40: check left(15), right(25)
+[10  20  30]   40>15 and 40>25 --> KEEP</pre>
+</div>
+
+<div class="keep-together">
+<h2>Edge Detector Comparison</h2>
+<table>
+<tr><th>Method</th><th>Order</th><th>Noise</th><th>Localization</th><th>Direction</th></tr>
+<tr><td><b>Sobel</b></td><td>1st</td><td>Medium</td><td>Good</td><td>Yes</td></tr>
+<tr><td><b>Prewitt</b></td><td>1st</td><td>Medium</td><td>Good</td><td>Yes</td></tr>
+<tr><td><b>Laplacian</b></td><td>2nd</td><td><b>High</b></td><td>Good</td><td><b>No</b></td></tr>
+<tr><td><b>LoG</b></td><td>2nd</td><td>Low</td><td>Good</td><td><b>No</b></td></tr>
+<tr><td><b>Canny</b></td><td>1st</td><td><b>Low</b></td><td><b>Excellent</b></td><td>Yes</td></tr>
+</table>
+<p class="note">1st order: edges where gradient is large, provides direction. 2nd order: edges at zero-crossings, isotropic, no direction.</p>
+</div>
+
+<h1>4. HOUGH TRANSFORM</h1>
+
+<div class="keep-together">
+<h2>rho-theta Form (PREFERRED)</h2>
+<pre>rho = x*cos(theta) + y*sin(theta)</pre>
+<p><b>rho</b> = perp distance from origin to line. <b>theta</b> = angle of perp [0&deg;, 180&deg;). Handles ALL line orientations.</p>
+</div>
+
+<div class="keep-together">
+<h2>Why not slope-intercept?</h2>
+<div class="side-by-side">
+<div>
+<table>
+<tr><th></th><th>y=mx+b</th><th>rho-theta</th></tr>
+<tr><td>Vertical lines</td><td><b>No</b> (m=&infin;)</td><td><b>Yes</b></td></tr>
+<tr><td>Params</td><td>Unbounded</td><td><b>Bounded</b></td></tr>
+<tr><td>In Hough?</td><td>No</td><td><b>Yes</b></td></tr>
+</table>
+</div>
+<div>
+<h3>Convert from y=mx+b</h3>
+<pre>rho = b / sqrt(1+m^2)
+theta = arctan(-1/m)</pre>
+</div>
+</div>
+</div>
+
+<div class="keep-together">
+<h2>Algorithm</h2>
+<ol style="margin:0; padding-left:12pt;">
+<li>Edge detection (e.g. Canny)</li>
+<li>For each edge pixel (x,y): for &theta;=0&deg; to 180&deg;: &rho; = x*cos&theta; + y*sin&theta;; Accumulator[&rho;,&theta;] += 1</li>
+<li>Find <b>peaks</b> in accumulator. Each peak (&rho;*, &theta;*) = detected line</li>
+</ol>
+<p><b>Accumulator:</b> 2D array [rho_bins &times; theta_bins]. Peak = line. One point traces a <b>sinusoid</b> in (&rho;,&theta;) space. Collinear points' sinusoids intersect at same point.</p>
+</div>
+
+<div class="keep-together">
+<h2>Worked Examples</h2>
+<pre>Point (3,4):
+  theta=0:  rho=3*1+4*0=3     theta=90: rho=0+4=4
+  theta=30: rho=2.6+2.0=4.6   theta=60: rho=1.5+3.5=5.0
+
+Vertical line x=5: theta=0, rho=5
+Horizontal line y=3: theta=90, rho=3
+Collinear (0,1),(1,2),(2,3) on y=x+1: all give theta=135, rho=sqrt(2)/2</pre>
+</div>
+
+<h1>5. CORNER DETECTION (Harris)</h1>
+
+<div class="keep-together">
+<h2>Second Moment Matrix M</h2>
+<pre>M = SUM w(x,y) [Ix^2    Ix*Iy]  = [A  C]   A=SUM Ix^2
+    x,y        [Ix*Iy   Iy^2 ]    [C  B]   B=SUM Iy^2
+                                             C=SUM Ix*Iy</pre>
+</div>
+
+<div class="keep-together">
+<h2>Harris Response R</h2>
+<pre>R = det(M) - k*(trace(M))^2
+det(M) = AB - C^2     trace(M) = A + B     k = 0.04-0.06</pre>
+</div>
+
+<div class="keep-together">
+<h2>Eigenvalue Interpretation</h2>
+<div class="side-by-side">
+<div>
+<table>
+<tr><th>&lambda;1</th><th>&lambda;2</th><th>Region</th><th>R</th></tr>
+<tr><td>Small</td><td>Small</td><td><b>Flat</b></td><td>|R| small</td></tr>
+<tr><td><b>Large</b></td><td>Small</td><td><b>Edge</b></td><td>R &lt; 0</td></tr>
+<tr><td><b>Large</b></td><td><b>Large</b></td><td><b>Corner</b></td><td><b>R &gt; thr</b></td></tr>
+</table>
+</div>
+<div>
+<h3>Algorithm</h3>
+<ol style="margin:0;padding-left:10pt;font-size:6.5pt;">
+<li>Compute Ix, Iy (Sobel)</li>
+<li>Compute Ix^2, Iy^2, Ix*Iy</li>
+<li>Gaussian weighting</li>
+<li>Compute R at each pixel</li>
+<li>Threshold + NMS</li>
+</ol>
+</div>
+</div>
+</div>
+
+<div class="keep-together">
+<h2>Error Function</h2>
+<pre>E(u,v) = SUM w(x,y)[I(x+u,y+v) - I(x,y)]^2
+Taylor: I(x+u,y+v) ~ I(x,y) + Ix*u + Iy*v
+Simplified: E(u,v) ~ [u v] M [u; v]</pre>
+</div>
+
+<div class="keep-together">
+<h2>Worked Example</h2>
+<pre>Patch: [10 10 10; 10 50 50; 10 50 50]
+Gradients at center: Ix=40, Iy=40
+M = [1600 1600; 1600 1600]
+det(M) = 1600*1600-1600*1600 = 0
+trace(M) = 3200
+R = 0 - 0.04*(3200)^2 = -409,600
+R < 0 --> EDGE (not a corner!)</pre>
+</div>
+
+<div class="keep-together">
+<h2>Feature Points</h2>
+<p><b>Distinctive, repeatable, invariant, sparse, informative.</b> M describes an ellipse: eigenvalues = axis lengths, eigenvectors = axis directions.</p>
+</div>
+
+<h1>6. IMAGE PYRAMIDS</h1>
+
+<div class="keep-together">
+<h2>Gaussian vs Laplacian Pyramid</h2>
+<div class="side-by-side">
+<div>
+<h3>Gaussian</h3>
+<pre>For each level k:
+  1. Smooth w/ Gaussian
+  2. Downsample by 2
+  Size: M/2^k x N/2^k</pre>
+<p>Low-pass. <b>Cannot</b> reconstruct original.</p>
+</div>
+<div>
+<h3>Laplacian</h3>
+<pre>L_k = G_k - expand(G_{k+1})
+Top: L_top = G_top
+
+Reconstruct:
+G_k = L_k + expand(G_{k+1})</pre>
+<p>Band-pass detail. <b>Can</b> reconstruct.</p>
+</div>
+</div>
+</div>
+
+<div class="keep-together">
+<table>
+<tr><th>Property</th><th>Gaussian</th><th>Laplacian</th></tr>
+<tr><td>Content</td><td>Smoothed images</td><td>Detail/edges</td></tr>
+<tr><td>Filtering</td><td>Low-pass</td><td>Band-pass</td></tr>
+<tr><td>Reconstruct?</td><td><b>No</b></td><td><b>Yes</b></td></tr>
+<tr><td>Use case</td><td>Feature detection, SIFT</td><td>Compression, blending</td></tr>
+</table>
+</div>
+
+<div class="keep-together">
+<h2>Example Sizes</h2>
+<p>512&times;512 &rarr; L1: 256&times;256 &rarr; L2: 128&times;128 &rarr; L3: 64&times;64</p>
+<p><b>Why pyramids:</b> multi-scale features, coarse-to-fine processing, handle objects at different sizes.</p>
+</div>
+
+<h1>7. SIFT</h1>
+
+<div class="keep-together">
+<h2>Pipeline (4 stages)</h2>
+<ol style="margin:0; padding-left:12pt;">
+<li><b>Scale-space extrema detection</b> -- DoG pyramid, local max/min among <b>26 neighbors</b> (8 same + 9 above + 9 below)</li>
+<li><b>Keypoint localization</b> -- sub-pixel (Taylor), reject low-contrast &amp; edge responses</li>
+<li><b>Orientation assignment</b> -- 36-bin histogram (10&deg; each), dominant peak = orientation. Multiple peaks = multiple keypoints</li>
+<li><b>Descriptor</b> -- <b>4&times;4 grid &times; 8 bins = 128D</b>. Normalized for illumination invariance</li>
+</ol>
+</div>
+
+<div class="keep-together">
+<h2>Scale Space &amp; DoG</h2>
+<pre>L(x,y,sigma) = G(x,y,sigma) * I(x,y)
+D(x,y,sigma) = L(x,y,k*sigma) - L(x,y,sigma)</pre>
+<p>DoG approximates scale-normalized Laplacian. k ~ &radic;2.</p>
+</div>
+
+<div class="keep-together">
+<h2>Pyramid Structure</h2>
+<p>Multiple <b>octaves</b> (image halved each time), multiple scales per octave (3-5). DoG between adjacent Gaussians. Typically 4-5 octaves.</p>
+</div>
+
+<div class="keep-together">
+<h2>Matching</h2>
+<p>Euclidean distance between 128D descriptors. <b>Ratio test:</b> dist(best)/dist(2nd best) &lt; threshold.</p>
+</div>
+
+<div class="keep-together">
+<h2>SIFT vs Harris</h2>
+<table>
+<tr><th>Property</th><th>Harris</th><th>SIFT</th></tr>
+<tr><td>Scale invariant</td><td><b>No</b></td><td><b>Yes</b></td></tr>
+<tr><td>Rotation invariant</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Descriptor</td><td>No (detect only)</td><td><b>Yes (128D)</b></td></tr>
+<tr><td>Multi-scale</td><td>No</td><td><b>Yes</b> (DoG)</td></tr>
+</table>
+</div>
+
+<div class="keep-together">
+<h2>Invariance Properties</h2>
+<ul class="compact-list">
+<li><b>Scale:</b> keypoints at characteristic scale via DoG</li>
+<li><b>Rotation:</b> descriptor relative to dominant orientation</li>
+<li><b>Illumination:</b> descriptor normalized</li>
+<li><b>Partial viewpoint:</b> local features tolerate moderate change</li>
+</ul>
+</div>
+
+<h1>8. RANSAC</h1>
+
+<div class="keep-together">
+<h2>Algorithm</h2>
+<ol style="margin:0; padding-left:12pt;">
+<li>Randomly select <b>n</b> minimum points</li>
+<li>Fit model to sample</li>
+<li>Count inliers (dist &lt; threshold)</li>
+<li>If inlier count &gt; best: save model</li>
+<li>Repeat <b>k</b> times</li>
+<li>(Optional) refit with all inliers</li>
+</ol>
+</div>
+
+<div class="keep-together">
+<h2>Key Parameters</h2>
+<div class="side-by-side">
+<div>
+<h3>Min Sample Sizes</h3>
+<table>
+<tr><th>Model</th><th>n</th></tr>
+<tr><td>Line</td><td>2</td></tr>
+<tr><td>Plane</td><td>3</td></tr>
+<tr><td>Homography</td><td>4 pairs</td></tr>
+<tr><td>Fund. matrix</td><td>8 pairs</td></tr>
+</table>
+</div>
+<div>
+<h3>Iterations Formula</h3>
+<pre>k = log(1-p) / log(1-w^n)</pre>
+<p><b>p</b>=success prob (0.99)<br>
+<b>w</b>=inlier ratio<br>
+<b>n</b>=min sample size</p>
+</div>
+</div>
+</div>
+
+<div class="keep-together">
+<h2>RANSAC vs Least Squares</h2>
+<table>
+<tr><th></th><th>Least Squares</th><th>RANSAC</th></tr>
+<tr><td>Outliers</td><td><b>Poor</b> (dominate)</td><td><b>Excellent</b></td></tr>
+<tr><td>Deterministic</td><td>Yes</td><td>No (random)</td></tr>
+<tr><td>&gt;50% outliers</td><td>Fails</td><td><b>Works</b></td></tr>
+<tr><td>Speed</td><td>Fast</td><td>Slower</td></tr>
+</table>
+</div>
+
+<div class="keep-together">
+<h2>Worked Example</h2>
+<pre>w=0.7, p=0.99, n=2 (line)
+k = log(1-0.99)/log(1-0.7^2)
+  = log(0.01)/log(0.51)
+  = -4.605 / -0.673 = 7 iterations</pre>
+<p><b>Consensus set:</b> all inliers for a model. Best model = largest consensus set.</p>
+</div>
+
+<h1>9. QUICK REFERENCE</h1>
+
+<div class="keep-together">
+<h2>All Formulas</h2>
+<pre>Projection:  x = fX/Z,  y = fY/Z
+Gradient:    |G| = sqrt(Gx^2+Gy^2),  theta = atan2(Gy,Gx)
+Gaussian:    G = (1/2*pi*sig^2)*exp(-(x^2+y^2)/(2*sig^2))
+Hough:       rho = x*cos(theta) + y*sin(theta)
+Harris:      R = det(M) - k*trace(M)^2
+             det=AB-C^2,  trace=A+B
+RANSAC:      k = log(1-p)/log(1-w^n)
+DoG:         D(x,y,sig) = L(x,y,k*sig) - L(x,y,sig)
+Pyramid:     Level k size = M/2^k x N/2^k
+Laplacian:   L_k = G_k - expand(G_{k+1})
+Comparison:  SSD = SUM(I1-I2)^2  (lower=similar)
+             NCC = SUM(I1*I2)/sqrt(SUM(I1^2)*SUM(I2^2))</pre>
+</div>
+
+<div class="keep-together">
+<h2>Variable Reference</h2>
+<table>
+<tr><th>Symbol</th><th>Meaning</th></tr>
+<tr><td>f</td><td>Focal length</td></tr>
+<tr><td>(X,Y,Z)</td><td>3D world coordinates</td></tr>
+<tr><td>Gx, Gy / Ix, Iy</td><td>Image gradients (Sobel)</td></tr>
+<tr><td>&sigma;</td><td>Gaussian std dev (blur width)</td></tr>
+<tr><td>w(x,y)</td><td>Window/weighting function</td></tr>
+<tr><td>M</td><td>2x2 second moment matrix</td></tr>
+<tr><td>A, B, C</td><td>SUM Ix^2, SUM Iy^2, SUM Ix*Iy</td></tr>
+<tr><td>&lambda;1, &lambda;2</td><td>Eigenvalues of M</td></tr>
+<tr><td>k (Harris)</td><td>Empirical constant 0.04-0.06</td></tr>
+<tr><td>&rho;, &theta;</td><td>Hough line params</td></tr>
+<tr><td>T_high, T_low</td><td>Canny thresholds</td></tr>
+<tr><td>L(x,y,&sigma;)</td><td>Scale-space (SIFT)</td></tr>
+<tr><td>D(x,y,&sigma;)</td><td>Difference of Gaussians</td></tr>
+<tr><td>w (RANSAC)</td><td>Inlier ratio</td></tr>
+<tr><td>n (RANSAC)</td><td>Min sample size</td></tr>
+<tr><td>G_k, L_k</td><td>Gaussian/Laplacian pyramid level</td></tr>
+</table>
+</div>
+
+</body>
+</html>
