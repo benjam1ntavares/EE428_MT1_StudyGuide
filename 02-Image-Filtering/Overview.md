@@ -1,4 +1,4 @@
-﻿# Image Filtering - Overview
+# Image Filtering - Overview
 
 ## Key Concepts to Master
 
@@ -160,19 +160,34 @@ Result = (1×10+2×20+1×30+2×40+4×50+2×60+1×70+2×80+1×90) / 16
 ---
 
 ## Study Checklist
-- [ ] Can perform 3×3 convolution by hand
-- [ ] Can perform median filtering by hand
-- [ ] Know construction of mean filter
-- [ ] Know construction of Gaussian filter
-- [ ] Can match filter type to noise type
-- [ ] Understand why median preserves edges
-- [ ] Know properties of each filter
+- [x] Can perform 3×3 convolution by hand
+- [x] Can perform median filtering by hand
+- [x] Know construction of mean filter
+- [x] Know construction of Gaussian filter
+- [x] Can match filter type to noise type
+- [x] Understand why median preserves edges
+- [x] Know properties of each filter
 
 ## Common Exam Questions
 1. "Apply this filter to this image patch" → Show work!
 2. "Which filter for salt & pepper noise?" → Median
 3. "Compare mean vs Gaussian filter" → Weighted vs uniform
 4. "Why does median preserve edges?" → Non-linear, removes outliers
+
+## Answers to Common Exam Questions
+
+**1. "Apply this filter to this image patch"**
+Multiply each filter weight by the corresponding image pixel, sum all products. For a 3x3 mean filter on patch [10 20 30; 40 50 60; 70 80 90]: sum all = 450, divide by 9 = **50**. Show every multiply-and-add step.
+
+**2. "Which filter for salt & pepper noise?"**
+**Median filter.** Salt & pepper creates isolated extreme-value pixels. Median sorts the neighborhood and picks the middle value, so the outlier pixels are ignored entirely. Mean/Gaussian filters would average the outlier in, spreading the noise.
+
+**3. "Compare mean vs Gaussian filter"**
+- Mean: all weights equal (1/N). Treats every neighbor the same. Blurs edges heavily.
+- Gaussian: center-weighted (weights fall off with distance). Better edge preservation because distant pixels contribute less. Both reduce Gaussian noise; Gaussian filter is generally preferred.
+
+**4. "Why does median preserve edges?"**
+It is non-linear -- it selects an existing pixel value rather than averaging. At an edge, the majority of pixels in the window are on one side, so the median picks a value from that side. The edge stays sharp. Linear filters blur by averaging across the edge boundary.
 
 ## Related Topics
 - Lecture 3: Image Filtering

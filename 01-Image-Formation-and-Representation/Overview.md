@@ -1,4 +1,4 @@
-﻿# Image Formation and Representation - Overview
+# Image Formation and Representation - Overview
 
 ## Key Concepts to Master
 
@@ -126,17 +126,22 @@ y = f * (Y / Z);
 ---
 
 ## Study Checklist
-- [ ] Can convert between coordinate systems
-- [ ] Can perform perspective projection calculation by hand
-- [ ] Understand homogeneous coordinates representation
-- [ ] Know projection matrix form
-- [ ] Can explain effects of sampling and quantization
-- [ ] Can describe effects of perspective projection
+- [x] Can convert between coordinate systems
+- [x] Can perform perspective projection calculation by hand
+- [x] Understand homogeneous coordinates representation
+- [x] Know projection matrix form
+- [x] Can explain effects of sampling and quantization
+- [x] Can describe effects of perspective projection
 
 ## Practice Problems
 1. Given 3D point (6, 3, 10) and f=50mm, find image coordinates
 2. Convert between matrix and image coordinate systems
 3. Explain why parallel railroad tracks appear to converge
+
+## Answers
+1. x = 50 * (6/10) = **30mm**, y = 50 * (3/10) = **15mm**. Image coordinates: **(30, 15) mm**.
+2. Matrix notation I(row, col) maps to image notation I(x, y) by swapping axes: row corresponds to y (vertical, increasing downward) and col corresponds to x (horizontal, increasing rightward). So matrix I(r, c) = image I(c, r). Example: matrix position (3, 5) = image coordinates (x=5, y=3).
+3. Perspective projection maps 3D points via x = f(X/Z). Railroad tracks have constant separation in X but increasing Z with distance. As Z grows, the projected x-coordinates f(X/Z) for each rail get closer together, converging toward x = 0 at Z = infinity. That convergence point is the **vanishing point**.
 
 ## Related Topics
 - Lecture 2: Image Formation

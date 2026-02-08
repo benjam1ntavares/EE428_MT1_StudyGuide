@@ -1,4 +1,4 @@
-﻿# Edge Detection - Overview
+# Edge Detection - Overview
 
 ## Key Concepts to Master
 
@@ -121,7 +121,6 @@ LoG = ∇²G = (x² + y² - 2σ²) / σ⁴ × exp(-(x² + y²)/(2σ²))
 
 ### 7. Non-Maxima Suppression (NMS)
 **CRITICAL: Understand this process!**
-
 **Purpose:** Thin thick edges to 1-pixel width
 
 **Algorithm:**
@@ -206,6 +205,31 @@ edges = edge(img, 'canny', [low_thresh high_thresh], sigma);
 | Laplacian | 2nd | High | Good | No |
 | LoG | 2nd | Low | Good | No |
 | Canny | 1st | Low | Excellent | Yes |
+
+## Answers to Common Exam Problems
+
+**1. Apply Sobel to image patch**
+Given a 3x3 patch, apply Gx and Gy masks separately. Multiply element-wise and sum. Example with patch [50 50 50; 50 50 100; 50 50 100]:
+- `Gx = (-1)(50)+(0)(50)+(1)(50)+(-2)(50)+(0)(50)+(2)(100)+(-1)(50)+(0)(50)+(1)(100) = 150`
+- `Gy = (-1)(50)+(-2)(50)+(-1)(50)+(0)(50)+(0)(50)+(0)(100)+(1)(50)+(2)(50)+(1)(100) = 50`
+
+**2. Calculate gradient magnitude and direction**
+From Gx and Gy above:
+- `|G| = sqrt(150^2 + 50^2) = sqrt(25000) = 158.1`
+- `theta = atan2(50, 150) = 18.4 degrees`
+
+**3. How many Canny parameters and what do they do?**
+**3 parameters:**
+- `sigma` -- controls Gaussian smoothing. Larger = fewer edges, less noise.
+- `T_high` -- strong edge threshold. Pixels above this are definite edges.
+- `T_low` -- weak edge threshold. Pixels between T_low and T_high are edges only if connected to a strong edge (hysteresis).
+
+**4. Explain non-maxima suppression**
+Thins thick edges to 1-pixel width. For each pixel, look at the gradient direction theta, check the two neighbors along that direction. If the pixel's gradient magnitude is greater than both neighbors, keep it; otherwise suppress to 0. Directions are quantized to 4 bins: 0, 45, 90, 135 degrees.
+
+**5. Compare first vs second-order methods**
+- First-order (Sobel, Prewitt, Canny): use gradient (first derivative). Find edges where gradient magnitude is large. Provide edge direction. Less noise-sensitive.
+- Second-order (Laplacian, LoG): use second derivative. Find edges at zero-crossings. No direction info. More noise-sensitive (Laplacian alone), but LoG mitigates this with Gaussian smoothing. Laplacian is isotropic (rotation invariant).
 
 ## Related Topics
 - Lecture 4: Edge Detection

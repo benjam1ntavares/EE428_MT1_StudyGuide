@@ -1,4 +1,4 @@
-﻿# Formula Cheat Sheet
+# Formula Cheat Sheet
 
 ## Perspective Projection
 ```

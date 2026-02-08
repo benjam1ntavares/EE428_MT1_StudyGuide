@@ -270,6 +270,25 @@ plot(corners);
 - M = [Iₓ²  IₓIᵧ]
       [IₓIᵧ Iᵧ²]
 
+## Answers to Common Exam Questions
+
+**Q1: Why are feature points useful?**
+They are distinctive (easy to localize), repeatable (found again under different conditions), invariant (robust to rotation, scale, illumination), sparse (efficient), and informative (encode local structure). Used for matching, recognition, 3D reconstruction, and tracking.
+
+**Q2: What does the second moment matrix M represent?**
+M encodes the local gradient structure around a pixel. Its eigenvalues describe the intensity variation: both large = corner (intensity changes in all directions), one large = edge (change in one direction only), both small = flat region. Geometrically, M defines an ellipse whose axes correspond to the eigenvalues/eigenvectors.
+
+**Q3: How to compute Harris R?**
+`R = det(M) - k*(trace(M))^2`, where `det(M) = AB - C^2` and `trace(M) = A + B`, with `A = sum(Ix^2)`, `B = sum(Iy^2)`, `C = sum(Ix*Iy)`, and k typically 0.04-0.06. Equivalently `R = lambda1*lambda2 - k*(lambda1 + lambda2)^2`. R > threshold = corner, R < 0 = edge, |R| small = flat.
+
+**Q4: What do eigenvalues of M tell us?**
+- Both lambda1 and lambda2 large: **corner** -- intensity changes significantly in multiple directions
+- One large, one small: **edge** -- intensity changes in one direction only
+- Both small: **flat region** -- no significant intensity change
+
+**Q5: Given gradients Ix, Iy at a point, compute M**
+Example: if `Ix = 40, Iy = 30` at a pixel, then `M = [Ix^2, Ix*Iy; Ix*Iy, Iy^2] = [1600, 1200; 1200, 900]`. For a window of pixels, sum these contributions (with Gaussian weighting) across all pixels in the window.
+
 ## Related Topics
 - Lecture 6: Corner Detection
 - SIFT uses multi-scale corner detection

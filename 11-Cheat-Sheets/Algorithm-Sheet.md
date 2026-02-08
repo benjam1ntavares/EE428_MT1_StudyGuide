@@ -1,4 +1,4 @@
-﻿# Algorithm Cheat Sheet
+# Algorithm Cheat Sheet
 
 ## Canny Edge Detection
 1. Gaussian smoothing

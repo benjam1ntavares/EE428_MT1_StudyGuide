@@ -184,6 +184,26 @@ end
 - No (information lost in smoothing)
 - Yes from Laplacian pyramid
 
+## Answers to Common Exam Questions
+
+**Q1: How is a Gaussian pyramid constructed?**
+Start with the original image (level 0). For each subsequent level: (1) convolve with a Gaussian filter to smooth, (2) downsample by a factor of 2 (keep every other pixel in each dimension). Level k has size `M/2^k x N/2^k`. Each level is a blurrier, smaller version of the previous.
+
+**Q2: How is the Laplacian pyramid different?**
+The Laplacian pyramid stores the *difference* (detail) between consecutive Gaussian levels: `L_k = G_k - expand(G_{k+1})`. It captures band-pass information (edges and textures at each scale). Unlike the Gaussian pyramid, the Laplacian pyramid can perfectly reconstruct the original image.
+
+**Q3: What is the size at level k?**
+For an original image of size M x N, level k has size `M/2^k x N/2^k`. Example: 512x512 original -> level 1: 256x256 -> level 2: 128x128 -> level 3: 64x64.
+
+**Q4: Why use image pyramids?**
+- Multi-scale feature detection (objects/features appear at different sizes)
+- Coarse-to-fine processing (fast approximate search at low res, refine at high res)
+- Handle scale invariance in recognition tasks
+- Efficient hierarchical algorithms (e.g., optical flow, template matching)
+
+**Q5: Can you reconstruct from a Gaussian pyramid?**
+**No.** Gaussian smoothing discards high-frequency information permanently. You cannot recover the original from a Gaussian pyramid. **Yes from a Laplacian pyramid:** `G_k = L_k + expand(G_{k+1})`, working from the coarsest level back up to full resolution.
+
 ## Related Topics
 - Lecture 7: Image Pyramids
 - SIFT uses scale-space (similar concept)

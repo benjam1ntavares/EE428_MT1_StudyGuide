@@ -219,6 +219,33 @@ end
 - Includes descriptor (Harris just detects)
 - More robust to transformations
 
+## Answers to Common Exam Questions
+
+**Q1: What does SIFT do?**
+SIFT detects and describes local image features that are invariant to scale and rotation. It finds keypoints at their characteristic scale using Difference of Gaussians, assigns each a dominant orientation, and generates a 128-dimensional descriptor. These descriptors can be matched across images for recognition, stitching, and 3D reconstruction.
+
+**Q2: What are properties of SIFT features?**
+- **Scale invariant:** keypoints detected at their natural scale via DoG pyramid
+- **Rotation invariant:** descriptor computed relative to dominant gradient orientation
+- **Illumination invariant:** descriptor is normalized, reducing sensitivity to brightness changes
+- **Partially viewpoint invariant:** local features tolerate moderate viewpoint changes
+- **Robust to noise and occlusion** since features are local and sparse
+
+**Q3: What is scale space?**
+A continuous multi-scale representation: `L(x, y, sigma) = G(x, y, sigma) * I(x, y)`. The image is convolved with Gaussians of increasing sigma, representing it at progressively coarser scales. This allows detecting features at the scale where they are most prominent.
+
+**Q4: What is DoG?**
+Difference of Gaussians: `D(x, y, sigma) = L(x, y, k*sigma) - L(x, y, sigma)`. It approximates the scale-normalized Laplacian of Gaussian. Extrema (local maxima/minima) in DoG across both space and scale are candidate keypoints. Computed by simply subtracting adjacent Gaussian-blurred images -- very efficient.
+
+**Q5: How is the scale-space pyramid organized?**
+- Divided into **octaves** (each octave doubles the effective scale; image is halved in size)
+- Within each octave, multiple Gaussian blurs at incrementally increasing sigma (typically 3-5 per octave)
+- DoG images computed between adjacent Gaussian images within each octave
+- Keypoints found by comparing each DoG pixel to its 26 neighbors (8 same scale + 9 above + 9 below)
+
+**Q6: Why 128 dimensions in the SIFT descriptor?**
+The region around each keypoint is divided into a 4x4 grid of cells. In each cell, an 8-bin gradient orientation histogram is computed. 4 x 4 x 8 = **128 dimensions**. This balances distinctiveness (enough bins to discriminate) with efficiency (not so many that matching is slow or overfitting occurs).
+
 ## Related Topics
 - Lecture 8: SIFT
 - Image Pyramids (similar multi-scale concept)

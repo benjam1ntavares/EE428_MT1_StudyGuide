@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(pandoc:*)",
+      "Bash(npm --version:*)",
+      "Bash(npm install:*)",
+      "Bash(md-to-pdf:*)",
+      "Bash(for f in 01-Image-Formation-and-Representation/Overview.md 02-Image-Filtering/Overview.md 03-Edge-Detection/Overview.md 04-Hough-Transform/Overview.md 05-Corner-Detection/Overview.md 06-Image-Pyramids/Overview.md 07-SIFT/Overview.md 08-RANSAC/Overview.md 11-Cheat-Sheets/Formula-Sheet.md 11-Cheat-Sheets/Algorithm-Sheet.md)",
+      "Bash(do echo \"Converting $f...\")",
+      "Bash(done)",
+      "Bash(winget install:*)",
+      "Bash(export PATH=\"$PATH:/c/Users/benji/AppData/Local/Pandoc\")",
+      "Bash(python3:*)",
+      "Bash(pip install:*)",
+      "Bash(pip3 install:*)",
+      "Bash(\"C:\\\\Users\\\\benji\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe\" -m pip install python-docx)"
+    ]
+  }
+}

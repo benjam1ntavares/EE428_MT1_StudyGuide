@@ -1,4 +1,4 @@
-﻿# EE428 Computer Vision - Midterm Study Hub
+# EE428 Computer Vision - Midterm Study Hub
 
 **Exam Date:** February 11, 2026 (Wednesday) 10:10-11 AM  
 **Coverage:** Everything up to RANSAC  

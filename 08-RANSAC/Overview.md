@@ -248,6 +248,31 @@ end
 - Requires threshold parameter
 - Computational cost (many iterations)
 
+## Answers to Common Exam Questions
+
+**Q1: What does RANSAC do?**
+RANSAC performs robust parameter estimation (e.g., fitting a line or homography) when the data contains outliers. Unlike least squares which lets outliers dominate the fit, RANSAC randomly samples minimal subsets, fits a model to each, and keeps the model that has the most inlier support.
+
+**Q2: What is the basic algorithm?**
+1. Randomly select the minimum number of points needed to fit the model (e.g., 2 for a line)
+2. Fit the model to those points
+3. Count inliers: all data points within a distance threshold of the model
+4. If this inlier count is the best so far, save the model
+5. Repeat for k iterations
+6. (Optional) Refit the best model using all its inliers for improved accuracy
+
+**Q3: How many points to fit a line?**
+Minimum **2 points** define a line. For other models: 3 points for a plane, 4 point pairs for a homography, 8 point pairs for a fundamental matrix.
+
+**Q4: What determines the number of iterations?**
+`k = log(1 - p) / log(1 - w^n)` where p = desired success probability (e.g., 0.99), w = inlier ratio, n = minimum sample size. Higher outlier ratio (lower w) or larger sample size (n) requires exponentially more iterations. Example: w=0.5, n=2, p=0.99 gives k = log(0.01)/log(0.75) = 16 iterations.
+
+**Q5: Why is RANSAC robust?**
+Outliers never influence the model fit because models are fit only to small random samples. An outlier can only affect a trial if it is selected in the random sample, and such trials will have few inliers and be discarded. RANSAC can handle over 50% outliers.
+
+**Q6: What is the consensus set?**
+The set of all data points that are inliers for a given model -- i.e., points whose distance to the model is below the threshold. The model with the largest consensus set is selected as the best fit.
+
 ## Related Topics
 - Lecture 9: RANSAC
 - Feature matching (generates data with outliers)

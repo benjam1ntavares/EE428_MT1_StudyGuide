@@ -10,13 +10,13 @@
 
 ### Session 1: Morning (2 hours)
 **PRIORITY 1: Edge Detection (Most testable)**
-- [ ] **MEMORIZE Sobel masks** (write 10 times):
+- [x] **MEMORIZE Sobel masks** (write 10 times):
 ```
   Gx = [-1  0  1]    Gy = [-1 -2 -1]
        [-2  0  2]         [ 0  0  0]
        [-1  0  1]         [ 1  2  1]
 ```
-- [ ] **Practice:** Apply Sobel to 5 image patches BY HAND
+- [x] **Practice:** Apply Sobel to 5 image patches BY HAND
 - [ ] **Memorize formulas:**
   - |G| = √(Gx² + Gy²)
   - θ = atan2(Gy, Gx)
@@ -205,7 +205,7 @@ medfilt2(img, [3 3])
 
 ---
 
-## TONIGHT (30 minutes before bed)
+## TONIGHT 2/7 (30 minutes before bed)
 
 **Final Memorization Drill:**
 - [ ] Write Sobel masks 5 times from memory

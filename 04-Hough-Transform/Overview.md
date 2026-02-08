@@ -264,6 +264,48 @@ end
 3. Convert line y = 2x + 3 to ρ-θ form
 4. Sketch parameter space curves for two collinear points
 
+## Answers
+
+### Common Exam Questions
+
+**Q1: What is the objective of Hough Transform?**
+Detect parametric shapes (especially lines) in images by transforming edge pixels into a parameter space and finding peaks. It is robust to noise, gaps in edges, and partial occlusions because collinear points independently vote for the same line parameters.
+
+**Q2: Why use rho-theta instead of slope-intercept?**
+Slope-intercept `y = mx + b` cannot represent vertical lines (m = infinity) and has unbounded parameter space. The normal form `rho = x*cos(theta) + y*sin(theta)` handles all line orientations with bounded parameters: `rho in [-D, D]`, `theta in [0, 180)`.
+
+**Q3: What is an accumulator cell?**
+One bin in the discretized (rho, theta) parameter space. Its value counts how many edge pixels voted for that particular line. A high count (peak) means many edge pixels are collinear along that line.
+
+**Q4: Given point (x,y) and angle theta, find rho**
+Direct substitution: `rho = x*cos(theta) + y*sin(theta)`.
+
+**Q5: Why do collinear points create a peak?**
+Each edge pixel (x,y) traces a sinusoidal curve in (rho, theta) space. If multiple pixels lie on the same line, their sinusoids all pass through the same (rho, theta) point, creating a peak in the accumulator.
+
+### Practice Problems
+
+**1. Calculate rho for point (3, 4) at theta = 0, 30, 60, 90 degrees**
+- `theta=0: rho = 3*cos(0) + 4*sin(0) = 3*1 + 4*0 = 3`
+- `theta=30: rho = 3*cos(30) + 4*sin(30) = 3*(0.866) + 4*(0.5) = 2.598 + 2.0 = 4.598`
+- `theta=60: rho = 3*cos(60) + 4*sin(60) = 3*(0.5) + 4*(0.866) = 1.5 + 3.464 = 4.964`
+- `theta=90: rho = 3*cos(90) + 4*sin(90) = 3*0 + 4*1 = 4`
+
+**2. Points (0,1), (1,2), (2,3) are collinear. Find line parameters.**
+The line is y = x + 1 (slope 1, intercept 1). To find (rho, theta): all three points should give the same rho at the correct theta.
+Using `rho = x*cos(theta) + y*sin(theta)` and checking theta = 135 degrees (perpendicular to slope-1 line):
+- `(0,1): rho = 0*cos(135) + 1*sin(135) = 0.707`
+- `(1,2): rho = 1*(-0.707) + 2*(0.707) = -0.707 + 1.414 = 0.707`
+- `(2,3): rho = 2*(-0.707) + 3*(0.707) = -1.414 + 2.121 = 0.707`
+All agree: **theta = 135 degrees, rho = sqrt(2)/2 = 0.707**.
+
+**3. Convert line y = 2x + 3 to rho-theta form**
+Using formulas: `rho = b / sqrt(1 + m^2) = 3 / sqrt(1 + 4) = 3/sqrt(5) = 1.342`.
+`theta = arctan(-1/m) = arctan(-0.5) = 180 - 26.57 = 153.43 degrees` (adjusting to [0,180) range since the line has positive intercept).
+
+**4. Sketch parameter space curves for two collinear points**
+Each point traces a sinusoid `rho = x*cos(theta) + y*sin(theta)` in (rho, theta) space. Two collinear points produce two sinusoids that intersect at exactly one point -- this intersection is the (rho, theta) of the line through both points. The sketch shows two sine-like curves crossing at a single peak location.
+
 ## Related Topics
 - Lecture 5: Hough Transform
 - Edge Detection (preprocessing step)
